@@ -1,4 +1,4 @@
-# 🛒 Abarrotes IBSA — WhatsApp Order Bot
+# 🛒 WhatsApp Order Bot
 
 A WhatsApp chatbot for **Abarrotes IBSA** that allows customers to place orders through WhatsApp. Built with Python, Flask, Twilio, and OpenAI GPT-4o Mini.
 
@@ -20,7 +20,7 @@ A WhatsApp chatbot for **Abarrotes IBSA** that allows customers to place orders 
 ## 🗂️ Project Structure
 
 ```
-abarrotes-ibsa-bot/
+orders-bot/
 │
 ├── app.py                  # Flask server and routes
 ├── config.py               # Credentials (never commit this file)
@@ -74,8 +74,8 @@ abarrotes-ibsa-bot/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/abarrotes-ibsa-bot.git
-cd abarrotes-ibsa-bot
+git clone https://github.com/YOUR_USERNAME/orders-bot.git
+cd orders-bot
 ```
 
 ### 2. Create a virtual environment (recommended)
