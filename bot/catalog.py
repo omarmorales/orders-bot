@@ -27,7 +27,7 @@ def load_products():
     except FileNotFoundError:
         print(f"❌ File not found: {CSV_PATH}")
     except Exception as e:
-        print(f"❌ Error loading productos.csv: {e}")
+        print(f"❌ Error loading products.csv: {e}")
 
 class CSVHandler(FileSystemEventHandler):
     def on_modified(self, event):

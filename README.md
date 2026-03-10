@@ -13,7 +13,7 @@ A WhatsApp chatbot for **Abarrotes IBSA** that allows customers to place orders 
 - 📧 Automatic email notifications to the store owner on every order
 - 📧 Optional order summary email sent to the customer
 - 📄 Product catalog loaded from a CSV file with hot-reload on changes
-- 🔄 Auto-reload catalog when `productos.csv` is updated (no restart needed)
+- 🔄 Auto-reload catalog when `products.csv` is updated (no restart needed)
 
 ---
 
@@ -25,7 +25,7 @@ abarrotes-ibsa-bot/
 ├── app.py                  # Flask server and routes
 ├── config.py               # Credentials (never commit this file)
 ├── config.example.py       # Credentials template
-├── productos.csv           # Product catalog
+├── products.csv           # Product catalog
 ├── requirements.txt        # Python dependencies
 ├── test.py                 # Local interactive test script
 │
@@ -112,7 +112,7 @@ TWILIO_AUTH_TOKEN  = "..."
 ```
 
 ### 5. Set up the product catalog
-Create a `productos.csv` file in the root of the project with this format:
+Create a `products.csv` file in the root of the project with this format:
 
 ```csv
 nombre,precio_pieza,precio_caja,piezas_caja,categoria,venta_caja
