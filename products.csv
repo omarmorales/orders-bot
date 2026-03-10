@@ -1,0 +1,10 @@
+nombre,precio_pieza,precio_caja,piezas_caja,categoria,venta_caja
+Arroz,25.00,280.00,12,Abarrotes,True
+Frijol,22.00,240.00,12,Abarrotes,True
+Aceite,45.00,500.00,12,Abarrotes,True
+Sal,12.00,,,Abarrotes,False
+Refresco Cola,18.00,180.00,12,Bebidas,True
+Agua Natural,12.00,120.00,12,Bebidas,True
+Jugo Naranja,20.00,,,Bebidas,False
+Detergente,35.00,380.00,12,Limpieza,True
+Jabón,15.00,160.00,12,Limpieza,True

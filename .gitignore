@@ -1,0 +1,33 @@
+# Credentials — never upload
+config.py
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Database (when added later)
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Operating system
+.DS_Store           # Mac
+Thumbs.db           # Windows
+
+# IDEs
+.vscode/
+.idea/
+*.swp
