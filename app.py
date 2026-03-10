@@ -8,7 +8,8 @@ import os
 
 from bot.catalog import start_catalog_watcher
 from bot.handler import handle_message
-from config import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN  = os.getenv("TWILIO_AUTH_TOKEN")
 
 load_dotenv()
 

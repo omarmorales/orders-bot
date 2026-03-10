@@ -4,8 +4,12 @@ import re
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from config import GMAIL_USER, GMAIL_PASSWORD, DUENO_EMAIL, SMTP_SERVER, SMTP_PORT
-
+import os
+GMAIL_USER     = os.getenv("GMAIL_USER")
+GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
+DUENO_EMAIL    = os.getenv("DUENO_EMAIL")
+SMTP_SERVER    = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+SMTP_PORT      = int(os.getenv("SMTP_PORT", "587"))
 
 def is_valid_email(text):
     return bool(re.match(r"[^@]+@[^@]+\.[^@]+", text.strip()))
