@@ -1,10 +1,10 @@
 # app.py
 
+import os
 from flask import Flask, request
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
-import os
 
 from bot.catalog import start_catalog_watcher
 from bot.handler import handle_message
@@ -38,7 +38,7 @@ def whatsapp_route():
 
 if __name__ == "__main__":
     try:
-        app.run(host="0.0.0.0", port=5001)
+        app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5001)))
     finally:
         observer.stop()
         observer.join()
