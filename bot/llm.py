@@ -1,12 +1,14 @@
 # bot/llm.py
 
+import os
 import json
+from dotenv import load_dotenv
 from openai import OpenAI
 from bot.catalog import get_catalog_text
-import os
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+load_dotenv()
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 MODEL  = "gpt-4o-mini"
 
 

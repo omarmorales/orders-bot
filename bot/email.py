@@ -1,10 +1,14 @@
 # bot/email.py
 
+import os
 import re
 import smtplib
+from dotenv import load_dotenv
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import os
+
+load_dotenv()
+
 GMAIL_USER     = os.getenv("GMAIL_USER")
 GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
 DUENO_EMAIL    = os.getenv("DUENO_EMAIL")

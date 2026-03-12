@@ -1,10 +1,31 @@
 nombre,precio_pieza,precio_caja,piezas_caja,categoria,venta_caja
-Arroz,25.00,280.00,12,Abarrotes,True
-Frijol,22.00,240.00,12,Abarrotes,True
-Aceite,45.00,500.00,12,Abarrotes,True
-Sal,12.00,,,Abarrotes,False
-Refresco Cola,18.00,180.00,12,Bebidas,True
-Agua Natural,12.00,120.00,12,Bebidas,True
-Jugo Naranja,20.00,,,Bebidas,False
-Detergente,35.00,380.00,12,Limpieza,True
-Jabón,15.00,160.00,12,Limpieza,True
+Arroz Morelos 1kg,18.00,200.00,12,Granos,true
+Frijol Negro 1kg,22.00,250.00,12,Granos,true
+Azúcar Estándar 1kg,24.00,270.00,12,Endulzantes,true
+Sal La Fina 1kg,8.00,90.00,12,Condimentos,true
+Aceite Nutrioli 1L,38.00,430.00,12,Aceites,true
+Aceite Capullo 900ml,35.00,400.00,12,Aceites,true
+Sopa Maruchan Vaso,14.00,160.00,12,Sopas,true
+Sopa Knorr Tomate 200g,12.00,130.00,12,Sopas,true
+Fideo Corto La Moderna 200g,9.00,100.00,12,Pastas,true
+Espagueti La Moderna 200g,10.00,110.00,12,Pastas,true
+Refresco Coca Cola 600ml,16.00,180.00,12,Bebidas,true
+Refresco Pepsi 600ml,15.00,170.00,12,Bebidas,true
+Refresco Jarritos Mandarina 600ml,14.00,160.00,12,Bebidas,true
+Agua Ciel 1L,12.00,130.00,12,Bebidas,true
+Leche Lala Entera 1L,24.00,270.00,12,Lácteos,true
+Leche Alpura Entera 1L,25.00,280.00,12,Lácteos,true
+Crema Lala 200g,18.00,,,Lácteos,false
+Queso Oaxaca Lala 400g,45.00,,,Lácteos,false
+Atún Dolores en Agua 140g,16.00,180.00,24,Enlatados,true
+Atún Herdez en Aceite 140g,17.00,190.00,24,Enlatados,true
+Frijoles Bayos La Costeña 560g,22.00,240.00,12,Enlatados,true
+Chile Jalapeño La Costeña 220g,18.00,200.00,12,Enlatados,true
+Salsa Valentina 370ml,22.00,240.00,12,Salsas,true
+Salsa Búfalo 150ml,18.00,,,Salsas,false
+Café Nescafé Clásico 200g,85.00,,,Café,false
+Café Cielito Querido 250g,72.00,,,Café,false
+Detergente Roma 500g,18.00,200.00,12,Limpieza,true
+Jabón Zote Rosa 400g,16.00,180.00,12,Limpieza,true
+Papel Higiénico Petalo 4 rollos,42.00,480.00,12,Higiene,true
+Jabón Palmolive 150g,14.00,160.00,12,Higiene,trueß
