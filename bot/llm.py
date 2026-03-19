@@ -4,7 +4,7 @@ import os
 import json
 from dotenv import load_dotenv
 from openai import OpenAI
-from bot.catalog import get_catalog_text
+from bot.catalog import get_relevant_catalog_text
 
 load_dotenv()
 
@@ -13,11 +13,12 @@ MODEL  = "gpt-4o-mini"
 
 
 def query_llm(session, user_message):
+    catalog_chunk = get_relevant_catalog_text(user_message)
     system_prompt = f"""You are a message classifier for an order system of a grocery store.
 The store and customers communicate in Spanish, so all responses must be in Spanish.
 
 CATALOG:
-{get_catalog_text()}
+{catalog_chunk}
 
 Respond ONLY with JSON, no additional text:
 {{"accion": "buscar", "productos_encontrados": [{{"nombre": "", "cantidad": 1, "presentacion": "pieza"}}], "mensaje": ""}}

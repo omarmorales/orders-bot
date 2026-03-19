@@ -170,12 +170,18 @@ def handle_message(phone_number, message):
         if not found_products:
             return llm_message
 
+        from thefuzz import process
+
         matched = []
         for item in found_products:
             name         = item.get("nombre", "")            if isinstance(item, dict) else item
-            quantity     = item.get("cantidad", 1)           if isinstance(item, dict) else 1
+            quantity     = int(item.get("cantidad", 1))      if isinstance(item, dict) else 1
             presentation = item.get("presentacion", "pieza") if isinstance(item, dict) else "pieza"
-            prod = next((p for p in products if normalize(p["name"]) == normalize(name)), None)
+            
+            product_names = [p["name"] for p in products]
+            best_match = process.extractOne(name, product_names, score_cutoff=70)
+            prod = next((p for p in products if p["name"] == best_match[0]), None) if best_match else None
+            
             if prod:
                 matched.append({
                     "prod":         prod,
