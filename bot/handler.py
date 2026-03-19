@@ -52,6 +52,7 @@ def handle_message(phone_number, message):
     if session["state"] == "waiting_presentation":
         msg  = message.strip().lower()
         prod = session["_temp_product"]
+        quantity = session.get("_temp_quantity", 1)
 
         if msg in ["caja", "c", "por caja"]:
             is_box = True
@@ -63,10 +64,28 @@ def handle_message(phone_number, message):
                 f"o por *caja* ({prod['units_per_box']} pzas — ${prod['box_price']:.2f})?"
             )
 
-        session["_is_box"] = is_box
-        session["state"]   = "waiting_quantity"
-        presentation = "caja" if is_box else "pieza"
-        return f"¿Cuántas *{presentation}s* de *{prod['name']}* quieres?"
+        added_text = add_to_cart(session, prod, quantity, is_box)
+
+        pending = session.get("_pending_prods", [])
+        if pending:
+            next_item = pending[0]
+            next_prod = next_item["prod"]
+            session["_temp_product"] = next_prod
+            session["_temp_quantity"] = next_item["quantity"]
+            session["_pending_prods"] = pending[1:]
+            return (
+                added_text + "\n\n" +
+                f"*{next_prod['name']}* (Pediste {next_item['quantity']}) está disponible en:\n"
+                f"  • *Pieza* — ${next_prod['unit_price']:.2f}\n"
+                f"  • *Caja* ({next_prod['units_per_box']} pzas) — ${next_prod['box_price']:.2f}\n\n"
+                "¿Lo quieres por *pieza* o por *caja*?"
+            )
+        else:
+            session["state"] = "active"
+            session.pop("_temp_product", None)
+            session.pop("_temp_quantity", None)
+            session.pop("_pending_prods", None)
+            return added_text
 
     # ── SELECTING ──
     if session["state"] == "selecting":
@@ -192,29 +211,6 @@ def handle_message(phone_number, message):
         if not matched:
             return llm_message
 
-        if len(matched) == 1:
-            item = matched[0]
-            prod = item["prod"]
-            session["_temp_product"] = prod
-
-            if item["presentation"] == "caja" and prod["sells_by_box"]:
-                session["_is_box"] = True
-                session["state"]   = "waiting_quantity"
-                return f"¿Cuántas *cajas* de *{prod['name']}* quieres? ({prod['units_per_box']} pzas — ${prod['box_price']:.2f} c/u)"
-
-            if prod["sells_by_box"]:
-                session["state"] = "waiting_presentation"
-                return (
-                    f"*{prod['name']}* disponible en:\n"
-                    f"  • *Pieza* — ${prod['unit_price']:.2f}\n"
-                    f"  • *Caja* ({prod['units_per_box']} pzas) — ${prod['box_price']:.2f}\n\n"
-                    "¿Lo quieres por *pieza* o por *caja*?"
-                )
-            else:
-                session["_is_box"] = False
-                session["state"]   = "waiting_quantity"
-                return f"¿Cuántas piezas de *{prod['name']}* quieres? (${prod['unit_price']:.2f} c/u)"
-
         responses = []
         pending   = []
 
@@ -222,22 +218,26 @@ def handle_message(phone_number, message):
             prod         = item["prod"]
             quantity     = item["quantity"]
             presentation = item["presentation"]
-            is_box       = presentation == "caja" and prod["sells_by_box"]
-
-            if prod["sells_by_box"] and presentation == "pieza":
-                pending.append(prod)
+            
+            if prod["sells_by_box"]:
+                if presentation == "caja":
+                    responses.append(add_to_cart(session, prod, quantity, True))
+                else: 
+                    pending.append({"prod": prod, "quantity": quantity})
             else:
-                responses.append(add_to_cart(session, prod, quantity, is_box))
+                responses.append(add_to_cart(session, prod, quantity, False))
 
         if pending:
-            prod = pending[0]
-            session["_temp_product"] = prod
+            first_pending = pending[0]
+            prod = first_pending["prod"]
+            session["_temp_product"]  = prod
+            session["_temp_quantity"] = first_pending["quantity"]
             session["_pending_prods"] = pending[1:]
             session["state"]          = "waiting_presentation"
             text = get_order_summary(session["order"]) + "\n\n" if session["order"] else ""
             return (
                 text
-                + f"*{prod['name']}* disponible en:\n"
+                + f"*{prod['name']}* (Pediste {first_pending['quantity']}) está disponible en:\n"
                 f"  • *Pieza* — ${prod['unit_price']:.2f}\n"
                 f"  • *Caja* ({prod['units_per_box']} pzas) — ${prod['box_price']:.2f}\n\n"
                 "¿Lo quieres por *pieza* o por *caja*?"
