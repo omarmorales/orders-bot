@@ -52,38 +52,54 @@ def add_to_cart(session, prod, quantity, is_box):
 
 
 def remove_from_cart(session, product_name):
-    normalized = normalize(product_name)
-    original   = session["order"][:]
-    session["order"] = [
-        i for i in session["order"]
-        if normalize(i["product"]) != normalized
-    ]
-    if len(session["order"]) < len(original):
-        return (
-            f"🗑️ *{product_name.title()}* eliminado del carrito.\n\n"
-            + get_order_summary(session["order"])
-            + "\n\n_Sigue buscando o escribe *listo* para confirmar._"
-        )
-    return f"⚠️ No encontré *{product_name}* en tu carrito."
+    if not session["order"]:
+        return f"⚠️ No encontré *{product_name}* en tu carrito."
+
+    from thefuzz import process
+    cart_names = [i["product"] for i in session["order"]]
+    best_match = process.extractOne(product_name, cart_names, score_cutoff=70)
+
+    if not best_match:
+        return f"⚠️ No encontré *{product_name}* en tu carrito."
+
+    matched_name = best_match[0]
+    original = session["order"][:]
+    session["order"] = [i for i in session["order"] if i["product"] != matched_name]
+
+    return (
+        f"🗑️ *{matched_name.title()}* eliminado del carrito.\n\n"
+        + get_order_summary(session["order"])
+        + "\n\n_Sigue buscando o escribe *listo* para confirmar._"
+    )
 
 
 def update_cart_quantity(session, product_name, new_quantity, is_box):
-    normalized = normalize(product_name)
-
     if new_quantity <= 0:
         return remove_from_cart(session, product_name)
 
+    if not session["order"]:
+        return f"⚠️ No encontré *{product_name}* en tu carrito."
+
+    from thefuzz import process
+    cart_names = [i["product"] for i in session["order"]]
+    best_match = process.extractOne(product_name, cart_names, score_cutoff=70)
+
+    if not best_match:
+        return f"⚠️ No encontré *{product_name}* en tu carrito."
+
+    matched_name = best_match[0]
+
     item = next(
         (i for i in session["order"]
-         if normalize(i["product"]) == normalized and i.get("is_box") == is_box),
+         if i["product"] == matched_name and i.get("is_box") == is_box),
         None
     )
     if not item:
-        return f"⚠️ No encontré *{product_name}* en tu carrito."
+        return f"⚠️ No encontré *{matched_name}* en tu carrito."
 
-    prod = next((p for p in products if normalize(p["name"]) == normalized), None)
+    prod = next((p for p in products if p["name"] == matched_name), None)
     if not prod:
-        return f"⚠️ No encontré el precio de *{product_name}*."
+        return f"⚠️ No encontré el precio de *{matched_name}*."
 
     price            = prod["box_price"] if is_box else prod["unit_price"]
     item["quantity"] = new_quantity
