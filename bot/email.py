@@ -58,7 +58,9 @@ def build_order_html(customer_name, phone_number, order):
     </div>"""
 
 
-def send_email(recipient, subject, html_body):
+import threading
+
+def _send_email_task(recipient, subject, html_body):
     try:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
@@ -73,10 +75,14 @@ def send_email(recipient, subject, html_body):
             server.sendmail(GMAIL_USER, recipient, msg.as_string())
 
         print(f"📧 Email sent to {recipient}")
-        return True
     except Exception as e:
         print(f"❌ Error sending email to {recipient}: {e}")
-        return False
+
+def send_email(recipient, subject, html_body):
+    thread = threading.Thread(target=_send_email_task, args=(recipient, subject, html_body))
+    thread.daemon = True  # Allows the thread to exit if the main program exits
+    thread.start()
+    return True
 
 
 def notify_owner(customer_name, phone_number, order):
