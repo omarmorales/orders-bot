@@ -116,22 +116,11 @@ def handle_message(phone_number, message):
     # ── CONFIRMING ──
     if session["state"] == "confirming":
         if message.strip().lower() in ["sí", "si", "s", "yes"]:
-            summary      = get_order_summary(session["order"])
-            name         = session["name"]
-            order        = session["order"][:]
-
-            # 📧 Notify owner
-            notify_owner(name, phone_number, order)
-
-            # Save order and wait for customer email
-            session["_pending_order"] = order
-            session["state"]          = "waiting_email"
-
+            session["state"] = "waiting_payment_method"
             return (
-                f"🎉 *¡Pedido confirmado, {name}!*\n\n"
-                + summary
-                + "\n\n¿Quieres recibir el resumen de tu pedido por correo?\n"
-                "Escribe tu *email* o *no* si no lo deseas."
+                "✅ ¡Perfecto! ¿Cómo prefieres pagar tu pedido?\n\n"
+                "💵 *Efectivo* (al recibir/recoger)\n"
+                "💳 *Transferencia*"
             )
 
         elif message.strip().lower() in ["no", "n"]:
@@ -139,6 +128,42 @@ def handle_message(phone_number, message):
             return "De acuerdo, sigue buscando.\n\n_Escribe *listo* cuando termines._"
         else:
             return "Por favor responde *sí* o *no*."
+
+    # ── WAITING FOR PAYMENT METHOD ──
+    if session["state"] == "waiting_payment_method":
+        msg = message.strip().lower()
+        if msg in ["efectivo", "e", "cash", "dinero"]:
+            session["_payment_method"] = "Efectivo"
+        elif msg in ["transferencia", "t", "tarjeta", "transfer"]:
+            session["_payment_method"] = "Transferencia"
+        else:
+            return "⚠️ Por favor responde *Efectivo* o *Transferencia*."
+
+        summary      = get_order_summary(session["order"])
+        name         = session["name"]
+        order        = session["order"][:]
+        payment_method = session["_payment_method"]
+
+        # 📧 Notify owner
+        notify_owner(name, phone_number, order, payment_method)
+
+        # Save order and wait for customer email
+        session["_pending_order"] = order
+        session["state"]          = "waiting_email"
+
+        response_text = f"🎉 *¡Pedido confirmado, {name}!*\n\n"
+        response_text += f"💳 *Método de pago:* {payment_method}\n"
+        
+        if payment_method == "Transferencia":
+            response_text += (
+                "\n🏦 *Datos para transferencia:*\n"
+                "Banco: BBVA\n"
+                "CLABE: 012345678901234567\n"
+                f"Concepto: {name}\n"
+            )
+
+        response_text += "\n" + summary + "\n\n¿Quieres recibir el resumen de tu pedido por correo?\nEscribe tu *email* o *no* si no lo deseas."
+        return response_text
 
     # ── WAITING FOR CUSTOMER EMAIL ──
     if session["state"] == "waiting_email":
@@ -157,7 +182,8 @@ def handle_message(phone_number, message):
         if is_valid_email(message):
             pending_order = session.get("_pending_order", [])
             name          = session["name"]
-            success       = notify_customer(name, phone_number, message.strip(), pending_order)
+            payment_method = session.get("_payment_method", "No especificado")
+            success       = notify_customer(name, phone_number, message.strip(), pending_order, payment_method)
             reset_session(phone_number)
 
             if success:

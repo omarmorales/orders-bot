@@ -19,7 +19,7 @@ def is_valid_email(text):
     return bool(re.match(r"[^@]+@[^@]+\.[^@]+", text.strip()))
 
 
-def build_order_html(customer_name, phone_number, order):
+def build_order_html(customer_name, phone_number, order, payment_method="No especificado"):
     total = sum(i["subtotal"] for i in order)
     rows  = ""
     for item in order:
@@ -40,6 +40,7 @@ def build_order_html(customer_name, phone_number, order):
         <div style="border:1px solid #ddd;border-top:none;padding:20px;border-radius:0 0 8px 8px">
             <p><strong>Cliente:</strong> {customer_name}</p>
             <p><strong>WhatsApp:</strong> {phone_number}</p>
+            <p><strong>Método de pago:</strong> {payment_method}</p>
             <table style="width:100%;border-collapse:collapse;margin-top:12px">
                 <thead>
                     <tr style="background:#f5f5f5">
@@ -85,11 +86,11 @@ def send_email(recipient, subject, html_body):
     return True
 
 
-def notify_owner(customer_name, phone_number, order):
-    html  = build_order_html(customer_name, phone_number, order)
+def notify_owner(customer_name, phone_number, order, payment_method="No especificado"):
+    html  = build_order_html(customer_name, phone_number, order, payment_method)
     return send_email(DUENO_EMAIL, f"🛒 Nuevo pedido de {customer_name}", html)
 
 
-def notify_customer(customer_name, phone_number, customer_email, order):
-    html  = build_order_html(customer_name, phone_number, order)
+def notify_customer(customer_name, phone_number, customer_email, order, payment_method="No especificado"):
+    html  = build_order_html(customer_name, phone_number, order, payment_method)
     return send_email(customer_email, "Tu pedido en Abarrotes IBSA", html)
