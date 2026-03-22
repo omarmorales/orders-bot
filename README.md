@@ -135,6 +135,8 @@ Refresco Cola,15.00,160.00,12,Bebidas,true
 
 ## 🧪 Testing Locally
 
+### Interactive Testing
+
 Run the interactive test script — no Twilio or ngrok needed:
 
 ```bash
@@ -163,6 +165,14 @@ Bot: 🛒 Tu pedido... ¿Confirmas?
 
 Tú: si
 Bot: 🎉 ¡Pedido confirmado!
+```
+
+### Automated Unit Tests
+
+To run the automated tests that verify the internal state machine without making live AI requests, run:
+
+```bash
+python -m unittest tests/test_handler.py
 ```
 
 ---
