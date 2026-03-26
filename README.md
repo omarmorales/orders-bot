@@ -1,6 +1,6 @@
 # 🛒 WhatsApp Order Bot
 
-A WhatsApp chatbot for **Abarrotes IBSA** that allows customers to place orders through WhatsApp. Built with Python, Flask, Twilio, and OpenAI GPT-4o Mini.
+A WhatsApp chatbot for **Abarrotes IBSA** that allows customers to place orders through WhatsApp. Built with Python, Flask, Twilio, OpenAI GPT-4o Mini, and Supabase PostgreSQL.
 
 ---
 
@@ -12,8 +12,7 @@ A WhatsApp chatbot for **Abarrotes IBSA** that allows customers to place orders 
 - 📦 Support for unit and box pricing
 - 📧 Automatic email notifications to the store owner on every order
 - 📧 Optional order summary email sent to the customer
-- 📄 Product catalog loaded from a CSV file with hot-reload on changes
-- 🔄 Auto-reload catalog when `products.csv` is updated (no restart needed)
+- ☁️ Product catalog fetched in real-time from a cloud Supabase PostgreSQL database
 
 ---
 
@@ -25,14 +24,16 @@ orders-bot/
 ├── app.py                  # Flask server and routes
 ├── config.py               # Credentials (never commit this file)
 ├── config.example.py       # Credentials template
-├── products.csv           # Product catalog
 ├── requirements.txt        # Python dependencies
 ├── interactive_test.py     # Local interactive test script
+│
+├── scripts/
+│   └── seed_supabase.py    # Database migration utility
 │
 └── bot/
     ├── __init__.py         # Module exports
     ├── sessions.py         # Session state management
-    ├── catalog.py          # CSV loader and catalog watcher
+    ├── catalog.py          # Supabase fetching logic
     ├── cart.py             # Cart operations
     ├── llm.py              # OpenAI GPT-4o Mini integration
     ├── email.py            # Email notifications
@@ -50,6 +51,7 @@ orders-bot/
 | **Twilio** | WhatsApp messaging | [twilio.com](https://twilio.com) |
 | **OpenAI** | Natural language understanding | [platform.openai.com](https://platform.openai.com) |
 | **Gmail** | Email notifications | [myaccount.google.com](https://myaccount.google.com) |
+| **Supabase** | Cloud PostgreSQL database | [supabase.com](https://supabase.com) |
 
 ### Gmail Setup
 1. Enable **2-Step Verification** on your Google account
@@ -68,6 +70,11 @@ orders-bot/
 2. Go to **Billing** and add a payment method (minimum $5 USD)
 3. Go to **API Keys → Create new secret key**
 
+### Supabase Setup
+1. Create a project at [supabase.com](https://supabase.com)
+2. Create a table called `products` with the following columns: `id`, `name`, `unit_price`, `box_price`, `units_per_box`, `category`, and `sells_by_box`.
+3. Go to **Project Settings → API** to get your **URL** and **anon public key**.
+
 ---
 
 ## 🚀 Local Installation
@@ -80,13 +87,13 @@ cd orders-bot
 
 ### 2. Create a virtual environment (recommended)
 ```bash
-python -m venv venv
+python -m venv .venv
 
 # Mac/Linux
-source venv/bin/activate
+source .venv/bin/activate
 
 # Windows
-venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
 ### 3. Install dependencies
@@ -96,40 +103,28 @@ pip install -r requirements.txt
 
 ### 4. Set up credentials
 ```bash
-cp config.example.py config.py
+cp config.example.py .env
 ```
 
-Then open `config.py` and fill in your credentials:
+Then open `.env` and fill in your credentials:
 ```python
-OPENAI_API_KEY     = "sk-..."
-GMAIL_USER         = "your@gmail.com"
-GMAIL_PASSWORD     = "xxxx xxxx xxxx xxxx"  # Gmail App Password
-DUENO_EMAIL        = "owner@gmail.com"
-SMTP_SERVER        = "smtp.gmail.com"
-SMTP_PORT          = 587
-TWILIO_ACCOUNT_SID = "AC..."
-TWILIO_AUTH_TOKEN  = "..."
+OPENAI_API_KEY=sk-...
+GMAIL_USER=your@gmail.com
+GMAIL_PASSWORD=xxxx xxxx xxxx xxxx
+DUENO_EMAIL=owner@gmail.com
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+SUPABASE_URL=https://xxxx.supabase.co
+SUPABASE_KEY=eyJhb...
 ```
 
-### 5. Set up the product catalog
-Create a `products.csv` file in the root of the project with this format:
-
-```csv
-nombre,precio_pieza,precio_caja,piezas_caja,categoria,venta_caja
-Arroz,5.50,60.00,12,Granos,true
-Frijol,6.00,65.00,12,Granos,true
-Detergente,18.00,,,Limpieza,false
-Refresco Cola,15.00,160.00,12,Bebidas,true
+### 5. Set up the product catalog (Database Seeding)
+To automatically push your local catalog into the Supabase database, run the seeder script (assuming you have a legacy `products.csv` prepared in the directory outside the script):
+```bash
+python scripts/seed_supabase.py
 ```
-
-| Column | Description |
-|---|---|
-| `nombre` | Product name |
-| `precio_pieza` | Unit price |
-| `precio_caja` | Box price (leave empty if not sold by box) |
-| `piezas_caja` | Units per box (leave empty if not sold by box) |
-| `categoria` | Product category |
-| `venta_caja` | `true` if sold by box, `false` if unit only |
 
 ---
 

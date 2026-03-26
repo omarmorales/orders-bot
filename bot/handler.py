@@ -1,7 +1,7 @@
 # bot/handler.py
 
 from bot.sessions import get_session, reset_session
-from bot.catalog import products
+from bot.catalog import get_products
 from bot.cart import add_to_cart, remove_from_cart, update_cart_quantity, get_order_summary, normalize
 from bot.llm import query_llm
 from bot.email import is_valid_email, notify_owner, notify_customer
@@ -223,6 +223,8 @@ def handle_message(phone_number, message):
             quantity     = int(item.get("cantidad", 1))      if isinstance(item, dict) else 1
             presentation = item.get("presentacion", "pieza") if isinstance(item, dict) else "pieza"
             
+            
+            products = get_products()
             product_names = [p["name"] for p in products]
             best_match = process.extractOne(name, product_names, score_cutoff=70)
             prod = next((p for p in products if p["name"] == best_match[0]), None) if best_match else None

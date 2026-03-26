@@ -28,7 +28,7 @@ class TestHandler(unittest.TestCase):
         self.phone = "test_123"
         reset_session(self.phone)
         
-    @patch('bot.handler.products', MOCK_PRODUCTS)
+    @patch('bot.handler.get_products', new=lambda: MOCK_PRODUCTS)
     @patch('bot.handler.query_llm')
     def test_add_simple_product(self, mock_query_llm):
         # Setup mock LLM response
@@ -55,7 +55,7 @@ class TestHandler(unittest.TestCase):
         self.assertEqual(session["order"][0]["product"], "Coca Cola 355ml")
         self.assertEqual(session["order"][0]["quantity"], 2)
 
-    @patch('bot.handler.products', MOCK_PRODUCTS)
+    @patch('bot.handler.get_products', new=lambda: MOCK_PRODUCTS)
     @patch('bot.handler.query_llm')
     def test_ambiguous_product_queue(self, mock_query_llm):
         session = get_session(self.phone)
@@ -98,7 +98,7 @@ class TestHandler(unittest.TestCase):
 
     @patch('bot.handler.notify_owner')
     @patch('bot.handler.notify_customer')
-    @patch('bot.handler.products', MOCK_PRODUCTS)
+    @patch('bot.handler.get_products', new=lambda: MOCK_PRODUCTS)
     @patch('bot.handler.query_llm')
     def test_checkout_flow(self, mock_query_llm, mock_notify_customer, mock_notify_owner):
         session = get_session(self.phone)

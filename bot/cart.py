@@ -1,7 +1,7 @@
 # bot/cart.py
 
 import unicodedata
-from bot.catalog import products
+from bot.catalog import get_products
 
 
 def normalize(text):
@@ -97,7 +97,7 @@ def update_cart_quantity(session, product_name, new_quantity, is_box):
     if not item:
         return f"⚠️ No encontré *{matched_name}* en tu carrito."
 
-    prod = next((p for p in products if p["name"] == matched_name), None)
+    prod = next((p for p in get_products() if p["name"] == matched_name), None)
     if not prod:
         return f"⚠️ No encontré el precio de *{matched_name}*."
 

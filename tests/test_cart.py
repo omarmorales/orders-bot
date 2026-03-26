@@ -80,7 +80,7 @@ class TestCart(unittest.TestCase):
         self.assertEqual(len(self.session["order"]), 0)
         self.assertIn("eliminado del carrito", result)
 
-    @patch('bot.cart.products', MOCK_PRODUCTS)
+    @patch('bot.cart.get_products', new=lambda: MOCK_PRODUCTS)
     def test_update_cart_quantity(self):
         self.session["order"] = [
             {"product": "Coca Cola 355ml", "quantity": 2, "subtotal": 30.0, "is_box": False}
@@ -92,7 +92,7 @@ class TestCart(unittest.TestCase):
         self.assertEqual(self.session["order"][0]["subtotal"], 75.0)
         self.assertIn("Actualizado: *5x Coca", result)
 
-    @patch('bot.cart.products', MOCK_PRODUCTS)
+    @patch('bot.cart.get_products', new=lambda: MOCK_PRODUCTS)
     def test_update_cart_quantity_zero_removes_item(self):
         self.session["order"] = [
             {"product": "Coca Cola 355ml", "quantity": 2, "subtotal": 30.0, "is_box": False}

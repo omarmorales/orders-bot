@@ -6,7 +6,6 @@ from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
 
-from bot.catalog import start_catalog_watcher
 from bot.handler import handle_message
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN  = os.getenv("TWILIO_AUTH_TOKEN")
@@ -19,8 +18,6 @@ twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 # ── Flask ──
 app = Flask(__name__)
 
-# ── Catalog watcher ──
-observer = start_catalog_watcher()
 
 
 @app.route('/whatsapp', methods=["POST"])
@@ -37,8 +34,4 @@ def whatsapp_route():
 
 
 if __name__ == "__main__":
-    try:
-        app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5001)))
-    finally:
-        observer.stop()
-        observer.join()
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5001)))

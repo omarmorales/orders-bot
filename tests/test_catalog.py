@@ -23,7 +23,7 @@ MOCK_PRODUCTS = [
 
 class TestCatalog(unittest.TestCase):
 
-    @patch('bot.catalog.products', MOCK_PRODUCTS)
+    @patch('bot.catalog.get_products', new=lambda: MOCK_PRODUCTS)
     def test_get_catalog_text(self):
         text = catalog.get_catalog_text()
         
@@ -33,7 +33,7 @@ class TestCatalog(unittest.TestCase):
         self.assertIn("Aceite Nutrioli 946ml (Category: Abarrotes)", text)
         self.assertIn("Unit: $40.00 | Box (12 units): $450.00", text)
 
-    @patch('bot.catalog.products', MOCK_PRODUCTS)
+    @patch('bot.catalog.get_products', new=lambda: MOCK_PRODUCTS)
     def test_get_relevant_catalog_text(self):
         # Empty query
         text_empty = catalog.get_relevant_catalog_text("")
@@ -47,13 +47,7 @@ class TestCatalog(unittest.TestCase):
         self.assertIn("Coca Cola", text_limited)
         self.assertNotIn("Aceite Nutrioli", text_limited)
 
-    # Note: We won't test `load_products` deeply since it requires reading the physical CSV, 
-    # but we can test if it fails gracefully when the file doesn't exist by modifying CSV_PATH
-    @patch('bot.catalog.CSV_PATH', 'invalid_path.csv')
-    @patch('builtins.print')
-    def test_load_products_file_not_found(self, mock_print):
-        catalog.load_products()
-        mock_print.assert_any_call("❌ File not found: invalid_path.csv")
+
 
 if __name__ == '__main__':
     unittest.main()
