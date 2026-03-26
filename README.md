@@ -27,7 +27,7 @@ orders-bot/
 ├── config.example.py       # Credentials template
 ├── products.csv           # Product catalog
 ├── requirements.txt        # Python dependencies
-├── test.py                 # Local interactive test script
+├── interactive_test.py     # Local interactive test script
 │
 └── bot/
     ├── __init__.py         # Module exports
@@ -140,7 +140,7 @@ Refresco Cola,15.00,160.00,12,Bebidas,true
 Run the interactive test script — no Twilio or ngrok needed:
 
 ```bash
-python test.py
+python interactive_test.py
 ```
 
 Example conversation:
@@ -172,7 +172,7 @@ Bot: 🎉 ¡Pedido confirmado!
 To run the automated tests that verify the internal state machine without making live AI requests, run:
 
 ```bash
-python -m unittest tests/test_handler.py
+python -m unittest discover tests/
 ```
 
 ---
