@@ -75,9 +75,9 @@ def _send_email_task(recipient, subject, html_body):
             server.login(GMAIL_USER, GMAIL_PASSWORD)
             server.sendmail(GMAIL_USER, recipient, msg.as_string())
 
-        print(f"📧 Email sent to {recipient}")
+        print(f"🖥️ [LOG INTERNO] Correo enviado exitosamente a {recipient}")
     except Exception as e:
-        print(f"❌ Error sending email to {recipient}: {e}")
+        print(f"🖥️ [LOG INTERNO] ❌ Error enviando correo a {recipient}: {e}")
 
 def send_email(recipient, subject, html_body):
     thread = threading.Thread(target=_send_email_task, args=(recipient, subject, html_body))

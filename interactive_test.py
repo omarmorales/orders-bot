@@ -1,4 +1,7 @@
-# test.py
+# interactive_test.py
+from dotenv import load_dotenv
+load_dotenv()
+
 from bot.handler import handle_message
 
 phone_number = "test_user"
